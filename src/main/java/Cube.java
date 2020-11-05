@@ -17,29 +17,41 @@ public class Cube {
         //pkg.getDependencies().get(0).getDependencies().get(2).addDependency(pkg);
 
 
-        Package pkgA = new Package("A");
-        project1.addPakages(pkgA);
-        pkgA.addDependency(new Package("B"));
-        pkgA.addDependency(new Package("X"));
-        pkgA.getDependencies().get(0).addDependency(new Package("C"));
-        pkgA.getDependencies().get(0).addDependency(new Package("T"));
+//        Package pkgA = new Package("A");
+//        project1.addPakages(pkgA);
+//        pkgA.addDependency(new Package("B"));
+//        pkgA.addDependency(new Package("X"));
+//        pkgA.getDependencies().get(0).addDependency(new Package("C"));
+//        pkgA.getDependencies().get(0).addDependency(new Package("T"));
+//        Package pkgD = new Package("D");
+//        pkgD.addDependency(pkgA.getDependencies().get(0).getDependencies().get(0));
+//        Package pkgE = new Package("E");
+//        pkgE.addDependency(new Package("Y"));
+//        pkgD.addDependency(pkgE);
+//        Package pkgC = pkgA.getDependencies().get(0).getDependencies().get(0);
+//        pkgC.addDependency(new Package("R"));
+//        Package pkgF = new Package("F");
+//        pkgF.addDependency(pkgE);
+//        pkgF.addDependency(new Package("U"));
 
+        Package pkgA = new Package("A");
+        Package pkgB = new Package("B");
+        Package pkgC = new Package("C");
         Package pkgD = new Package("D");
-        pkgD.addDependency(pkgA.getDependencies().get(0).getDependencies().get(0));
-        Package pkgE = new Package("E");
-        pkgE.addDependency(new Package("Y"));
-        pkgD.addDependency(pkgE);
-        Package pkgC = pkgA.getDependencies().get(0).getDependencies().get(0);
-        pkgC.addDependency(new Package("R"));
-        Package pkgF = new Package("F");
-        pkgF.addDependency(pkgE);
-        pkgF.addDependency(new Package("U"));
+        pkgA.addDependency(pkgB);
+        pkgA.addDependency(pkgC);
+        pkgB.addDependency(pkgD);
+        pkgC.addDependency(pkgD);
+//        pkgA.addDependency(pkgB);
+//        pkgB.addDependency(pkgC);
+//        pkgC.addDependency(pkgD);
+//        pkgD.addDependency(pkgA);
 
         List<Package> listP = new ArrayList<>();
-        //listP.add(pkg);
+      //  listP.add(pkg);
         listP.add(pkgA);
-        listP.add(pkgD);
-        listP.add(pkgF);
+//        listP.add(pkgD);
+//        listP.add(pkgF);
         if(project1.hasCyclicDependencies(listP) == true)
             throw new RuntimeException("есть цикл");
 

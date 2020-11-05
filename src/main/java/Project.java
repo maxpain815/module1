@@ -25,59 +25,61 @@ public class Project {
     public Boolean hasCyclicDependencies(List<Package> packages) {
         for (Package packag : packages) {
             circle = false;
-            allPackages.clear();
-            allPackages.add(packag);
             check(packag);
             return circle;
         }
         return false;
     }
 
-    private void check(Package packag1) {
-        for(Package packag:packag1.getDependencies()) {
-            if (allPackages.contains(packag)) {
-                circle = true;
-                return;
-            }
-            allPackages.add(packag);
-            if (!packag.getDependencies().isEmpty())
-                check(packag);
+    private void check(Package packag) {
+        if (allPackages.contains(packag)) {
+            circle = true;
+            return;
         }
+        allPackages.add(packag);
+        for (Package packag1 : packag.getDependencies()) {
+            if (!packag.getDependencies().isEmpty())
+                check(packag1);
+        }
+        if(!orderedList.contains(allPackages.get(allPackages.size()-1)))
+        orderedList.add(allPackages.get(allPackages.size()-1));
+
+        allPackages.remove(allPackages.size()-1);
     }
 
     protected List<Package> getCompilationOrder(List<Package> packages) {
         List<Package> packagesRes = new LinkedList<>();
-        List<List<Package>> list = new LinkedList<>();
+        orderedList.clear();
+        allPackages.clear();
         for (Package packag : packages) {
-            list.clear();
-            orderedList.clear();
-            orderedList.add(packag);
-            list.add(sequence(packag));
-            for (List<Package> lists:list) {
-                if(packagesRes.isEmpty()){
-                    packagesRes.addAll(lists);
-                }else {
-                    for (Package pak : lists) {
-                        if(packagesRes.contains(pak)){
-                            for (int i =0;i<lists.indexOf(pak);i++)
-                                packagesRes.add(packagesRes.indexOf(pak) + i, lists.get(i));
-                            lists = lists.subList(lists.indexOf(pak),lists.size());
-                        }
-                        packagesRes.add(pak);
+            sequence(packag);
+            List<Package> list = orderedList;
+            if (packagesRes.isEmpty()) {
+                packagesRes.addAll(list);
+            } else {
+                for (Package pak : list) {
+                    if (packagesRes.contains(pak)) {
+                        for (int i = 0; i < list.indexOf(pak); i++)
+                            packagesRes.add(packagesRes.indexOf(pak) + i, list.get(i));
+                        list = list.subList(list.indexOf(pak), list.size());
                     }
+                    packagesRes.add(pak);
                 }
             }
         }
         return packagesRes.stream().distinct().collect(Collectors.toCollection(() -> new LinkedList<>()));
     }
 
-    private List<Package> sequence(Package packag1) {
-        for(Package packag:packag1.getDependencies()) {
-            orderedList.add(packag);
-            if (!packag.getDependencies().isEmpty())
+    private void sequence(Package packag1) {
+        allPackages.add(packag1);
+        if (!packag1.getDependencies().isEmpty()) {
+            for (Package packag : packag1.getDependencies()) {
                 sequence(packag);
+            }
         }
-        return orderedList;
+        if(!orderedList.contains(allPackages.get(allPackages.size()-1)))
+        orderedList.add(allPackages.get(allPackages.size()-1));
+        allPackages.remove(allPackages.size()-1);
     }
 
 }
